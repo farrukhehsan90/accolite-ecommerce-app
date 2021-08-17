@@ -1,1 +1,0 @@
-# accolite-ecommerce-app
