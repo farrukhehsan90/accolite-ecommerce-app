@@ -1,22 +1,20 @@
 import React from 'react';
-import {
-  StyleSheet,
-  Button,
-  Text,
-  View,
-  TouchableOpacity,
-  ScrollView,
-  Image,
-  ActivityIndicator,
-  TextInput,
-  Alert,
-} from 'react-native';
+import {Text, View, TouchableOpacity} from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
 
-function Layout({children}) {
+function Layout({children, navigation}) {
   return (
     <>
-      <View>
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'space-around',
+          alignItems: 'center',
+        }}>
         <Text>Logo</Text>
+        <TouchableOpacity onPress={() => navigation.navigate('Favourite')}>
+          <Icon name="ios-heart" size={25} color="#000" />
+        </TouchableOpacity>
       </View>
       {children}
     </>

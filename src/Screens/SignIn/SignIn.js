@@ -8,6 +8,9 @@ import {
   TouchableOpacity,
   Image,
   Alert,
+  Dime,
+  Dimensions,
+  ImageBackground,
 } from 'react-native';
 
 export default function Login({navigation}) {
@@ -25,57 +28,61 @@ export default function Login({navigation}) {
   };
 
   return (
-    <View style={styles.container}>
-      <Image
-        style={styles.bgImage}
-        source={{uri: 'https://lorempixel.com/900/1400/nightlife/2/'}}
-      />
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.inputs}
-          placeholder="Email"
-          keyboardType="email-address"
-          underlineColorAndroid="transparent"
-          onChangeText={email => setState({email})}
-        />
-        <Image
-          style={styles.inputIcon}
-          source={{uri: 'https://img.icons8.com/nolan/40/000000/email.png'}}
-        />
+    <ImageBackground
+      source={{uri: 'https://lorempixel.com/900/1400/nightlife/2/'}}
+      style={{width: '100%', height: '100%'}}>
+      <View style={styles.container}>
+        {/* <Image
+          style={styles.bgImage}
+          source={{uri: 'https://lorempixel.com/900/1400/nightlife/2/'}}
+        /> */}
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={styles.inputs}
+            placeholder="Email"
+            keyboardType="email-address"
+            underlineColorAndroid="transparent"
+            onChangeText={email => setState({email})}
+          />
+          <Image
+            style={styles.inputIcon}
+            source={{uri: 'https://img.icons8.com/nolan/40/000000/email.png'}}
+          />
+        </View>
+
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={styles.inputs}
+            placeholder="Password"
+            secureTextEntry={true}
+            underlineColorAndroid="transparent"
+            onChangeText={password => setState({password})}
+          />
+          <Image
+            style={styles.inputIcon}
+            source={{uri: 'https://img.icons8.com/nolan/40/000000/key.png'}}
+          />
+        </View>
+
+        <TouchableOpacity
+          style={styles.btnForgotPassword}
+          onPress={() => onClickListener('restore_password')}>
+          <Text style={styles.btnText}>Forgot your password?</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[styles.buttonContainer, styles.loginButton]}
+          onPress={() => onClickListener('login')}>
+          <Text style={styles.loginText}>Login</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.buttonContainer}
+          onPress={() => onClickListener('register')}>
+          <Text style={styles.btnText}>Register</Text>
+        </TouchableOpacity>
       </View>
-
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.inputs}
-          placeholder="Password"
-          secureTextEntry={true}
-          underlineColorAndroid="transparent"
-          onChangeText={password => setState({password})}
-        />
-        <Image
-          style={styles.inputIcon}
-          source={{uri: 'https://img.icons8.com/nolan/40/000000/key.png'}}
-        />
-      </View>
-
-      <TouchableOpacity
-        style={styles.btnForgotPassword}
-        onPress={() => onClickListener('restore_password')}>
-        <Text style={styles.btnText}>Forgot your password?</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity
-        style={[styles.buttonContainer, styles.loginButton]}
-        onPress={() => onClickListener('login')}>
-        <Text style={styles.loginText}>Login</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity
-        style={styles.buttonContainer}
-        onPress={() => onClickListener('register')}>
-        <Text style={styles.btnText}>Register</Text>
-      </TouchableOpacity>
-    </View>
+    </ImageBackground>
   );
 }
 
@@ -86,7 +93,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#DCDCDC',
+    // backgroundColor: '#DCDCDC',
   },
   inputContainer: {
     borderBottomColor: '#F5FCFF',
@@ -160,8 +167,8 @@ const styles = StyleSheet.create({
     flex: 1,
     resizeMode,
     position: 'absolute',
-    width: '100%',
-    height: '100%',
+    width: Dimensions.get('window').width,
+    height: Dimensions.get('window').height,
     justifyContent: 'center',
   },
   btnText: {

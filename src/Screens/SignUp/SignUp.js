@@ -7,6 +7,7 @@ import {
   Button,
   TouchableOpacity,
   Image,
+  ImageBackground,
   Alert,
 } from 'react-native';
 
@@ -20,79 +21,83 @@ export default function SignUp({navigation}) {
   };
 
   return (
-    <View style={styles.container}>
-      <Image
-        style={styles.bgImage}
-        source={{uri: 'https://lorempixel.com/900/1400/nightlife/8/'}}
-      />
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.inputs}
-          placeholder="Full name"
-          underlineColorAndroid="transparent"
-          onChangeText={email => setState({email})}
-        />
-        <Image
-          style={styles.inputIcon}
-          source={{
-            uri: 'https://img.icons8.com/color/40/000000/circled-user-male-skin-type-3.png',
-          }}
-        />
+    <ImageBackground
+      source={{uri: 'https://lorempixel.com/900/1400/nightlife/8/'}}
+      style={{width: '100%', height: '100%'}}>
+      <View style={styles.container}>
+        {/* <Image
+          style={styles.bgImage}
+          source={{uri: 'https://lorempixel.com/900/1400/nightlife/8/'}}
+        /> */}
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={styles.inputs}
+            placeholder="Full name"
+            underlineColorAndroid="transparent"
+            onChangeText={email => setState({email})}
+          />
+          <Image
+            style={styles.inputIcon}
+            source={{
+              uri: 'https://img.icons8.com/color/40/000000/circled-user-male-skin-type-3.png',
+            }}
+          />
+        </View>
+
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={styles.inputs}
+            placeholder="Email"
+            keyboardType="email-address"
+            underlineColorAndroid="transparent"
+            onChangeText={email => setState({email})}
+          />
+          <Image
+            style={styles.inputIcon}
+            source={{
+              uri: 'https://img.icons8.com/flat_round/40/000000/secured-letter.png',
+            }}
+          />
+        </View>
+
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={styles.inputs}
+            placeholder="Password"
+            secureTextEntry={true}
+            underlineColorAndroid="transparent"
+            onChangeText={password => setState({password})}
+          />
+          <Image
+            style={styles.inputIcon}
+            source={{
+              uri: 'https://img.icons8.com/color/40/000000/password.png',
+            }}
+          />
+        </View>
+
+        <TouchableOpacity
+          style={styles.btnByRegister}
+          onPress={() => onClickListener('restore_password')}>
+          <Text style={styles.textByRegister}>
+            By registering on this App you confirm that you have read and accept
+            our policy
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[styles.buttonContainer, styles.loginButton]}
+          onPress={() => onClickListener('login')}>
+          <Text style={styles.loginText}>SignUp</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.buttonContainer}
+          onPress={() => onClickListener('register')}>
+          <Text style={styles.btnText}>Have an account?</Text>
+        </TouchableOpacity>
       </View>
-
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.inputs}
-          placeholder="Email"
-          keyboardType="email-address"
-          underlineColorAndroid="transparent"
-          onChangeText={email => setState({email})}
-        />
-        <Image
-          style={styles.inputIcon}
-          source={{
-            uri: 'https://img.icons8.com/flat_round/40/000000/secured-letter.png',
-          }}
-        />
-      </View>
-
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.inputs}
-          placeholder="Password"
-          secureTextEntry={true}
-          underlineColorAndroid="transparent"
-          onChangeText={password => setState({password})}
-        />
-        <Image
-          style={styles.inputIcon}
-          source={{
-            uri: 'https://img.icons8.com/color/40/000000/password.png',
-          }}
-        />
-      </View>
-
-      <TouchableOpacity
-        style={styles.btnByRegister}
-        onPress={() => onClickListener('restore_password')}>
-        <Text style={styles.textByRegister}>
-          By registering on this App you confirm that you have read and accept
-          our policy
-        </Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity
-        style={[styles.buttonContainer, styles.loginButton]}
-        onPress={() => onClickListener('login')}>
-        <Text style={styles.loginText}>SignUp</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity
-        style={styles.buttonContainer}
-        onPress={() => onClickListener('register')}>
-        <Text style={styles.btnText}>Have an account?</Text>
-      </TouchableOpacity>
-    </View>
+    </ImageBackground>
   );
 }
 
@@ -103,7 +108,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#DCDCDC',
+    // backgroundColor: '#DCDCDC',
   },
   inputContainer: {
     borderBottomColor: '#F5FCFF',

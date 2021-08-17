@@ -86,7 +86,7 @@ export default class Store extends Component {
 
   render() {
     return (
-      <Layout>
+      <Layout navigation={this.props.navigation}>
         <View style={styles.container}>
           <FlatList
             style={styles.list}
