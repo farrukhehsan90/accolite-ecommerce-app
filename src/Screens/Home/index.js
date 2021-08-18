@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   StyleSheet,
   Text,
@@ -10,151 +10,272 @@ import {
   FlatList,
 } from 'react-native';
 import Layout from '../../Layout';
+import Data from './data.json';
+import AsyncStorage from '@react-native-community/async-storage';
+import {Select, Option} from 'react-native-single-select';
+import OptionMenu from './OptionMenu';
 
-export default class Store extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      data: [
-        {
-          id: 1,
-          title: 'Product 1',
-          price: '$ 25.00 USD',
-          image: 'https://via.placeholder.com/400x200/FFB6C1/000000',
-        },
-        {
-          id: 2,
-          title: 'Product 2',
-          price: '$ 10.13 USD',
-          image: 'https://via.placeholder.com/400x200/FA8072/000000',
-        },
-        {
-          id: 3,
-          title: 'Product 3',
-          price: '$ 12.12 USD',
-          image: 'https://via.placeholder.com/400x200/87CEEB/000000',
-        },
-        {
-          id: 4,
-          title: 'Product 4',
-          price: '$ 11.00 USD',
-          image: 'https://via.placeholder.com/400x200/4682B4/000000',
-        },
-        {
-          id: 5,
-          title: 'Product 5',
-          price: '$ 20.00 USD',
-          image: 'https://via.placeholder.com/400x200/008080/000000',
-        },
-        {
-          id: 6,
-          title: 'Product 6',
-          price: '$ 33.00 USD',
-          image: 'https://via.placeholder.com/400x200/40E0D0/000000',
-        },
-        {
-          id: 7,
-          title: 'Product 7',
-          price: '$ 20.95 USD',
-          image: 'https://via.placeholder.com/400x200/EE82EE/000000',
-        },
-        {
-          id: 8,
-          title: 'Product 8',
-          price: '$ 13.60 USD',
-          image: 'https://via.placeholder.com/400x200/48D1CC/000000',
-        },
-        {
-          id: 9,
-          title: 'Product 9',
-          price: '$ 15.30 USD',
-          image: 'https://via.placeholder.com/400x200/191970/000000',
-        },
-        {
-          id: 9,
-          title: 'Product 10',
-          price: '$ 21.30 USD',
-          image: 'https://via.placeholder.com/400x200/7B68EE/000000',
-        },
-      ],
-    };
-  }
+export default function Store({navigation}) {
+  const [state, seState] = useState({
+    data: [
+      {
+        id: 1,
+        title: 'Product 1',
+        price: '$ 25.00 USD',
+        image: 'https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg',
+      },
+      {
+        id: 2,
+        title: 'Product 2',
+        price: '$ 10.13 USD',
+        image: 'https://via.placeholder.com/400x200/FA8072/000000',
+      },
+      {
+        id: 3,
+        title: 'Product 3',
+        price: '$ 12.12 USD',
+        image: 'https://via.placeholder.com/400x200/87CEEB/000000',
+      },
+      {
+        id: 4,
+        title: 'Product 4',
+        price: '$ 11.00 USD',
+        image: 'https://via.placeholder.com/400x200/4682B4/000000',
+      },
+      {
+        id: 5,
+        title: 'Product 5',
+        price: '$ 20.00 USD',
+        image: 'https://via.placeholder.com/400x200/008080/000000',
+      },
+      {
+        id: 6,
+        title: 'Product 6',
+        price: '$ 33.00 USD',
+        image: 'https://via.placeholder.com/400x200/40E0D0/000000',
+      },
+      {
+        id: 7,
+        title: 'Product 7',
+        price: '$ 20.95 USD',
+        image: 'https://via.placeholder.com/400x200/EE82EE/000000',
+      },
+      {
+        id: 8,
+        title: 'Product 8',
+        price: '$ 13.60 USD',
+        image: 'https://via.placeholder.com/400x200/48D1CC/000000',
+      },
+      {
+        id: 9,
+        title: 'Product 9',
+        price: '$ 15.30 USD',
+        image: 'https://via.placeholder.com/400x200/191970/000000',
+      },
+      {
+        id: 9,
+        title: 'Product 10',
+        price: '$ 21.30 USD',
+        image: 'https://via.placeholder.com/400x200/7B68EE/000000',
+      },
+    ],
+  });
 
-  addProductToCart = () => {
-    Alert.alert('Success', 'The product has been added to your cart');
+  const addProductToCart = async (
+    itemId,
+    itemTitle,
+    itemDescription,
+    itemPrice,
+    itemImg,
+  ) => {
+    // Alert.alert('Success', 'The product has been added to your cart');
+    const userdata = await AsyncStorage.getItem('items');
+    let itemsCopy;
+    if (userdata) {
+      let items = JSON.parse(userdata);
+      itemsCopy = [...items];
+      console.log('khurram', items);
+      itemsCopy.push({
+        itemId,
+        itemTitle,
+        itemDescription,
+        itemPrice,
+        itemImg,
+        itemQuantity: 1,
+      });
+    } else {
+      itemsCopy = [
+        {
+          itemId,
+          itemTitle,
+          itemDescription,
+          itemPrice,
+          itemImg,
+          itemQuantity: 1,
+        },
+      ];
+    }
+    const key = 'itemImg';
+
+    const arrayUniqueByKey = [
+      ...new Map(itemsCopy.map(item => [item[key], item])).values(),
+    ];
+    console.log('items', arrayUniqueByKey);
+    await AsyncStorage.setItem('items', JSON.stringify(arrayUniqueByKey));
+    navigation.navigate('Cart');
   };
 
-  render() {
-    return (
-      <Layout navigation={this.props.navigation}>
-        <View style={styles.container}>
-          <FlatList
-            style={styles.list}
-            contentContainerStyle={styles.listContainer}
-            data={this.state.data}
-            horizontal={false}
-            numColumns={2}
-            keyExtractor={item => {
-              return item.id;
-            }}
-            ItemSeparatorComponent={() => {
-              return <View style={styles.separator} />;
-            }}
-            renderItem={post => {
-              const item = post.item;
-              return (
-                <View style={styles.card}>
-                  <View style={styles.cardHeader}>
-                    <View>
-                      <Text style={styles.title}>{item.title}</Text>
-                      <Text style={styles.price}>{item.price}</Text>
-                    </View>
+  const addProductToFavourite = async (
+    itemId,
+    itemTitle,
+    itemDescription,
+    itemPrice,
+    itemImg,
+  ) => {
+    const userdata = await AsyncStorage.getItem('favourite');
+    let itemsCopy;
+    if (userdata) {
+      let items = JSON.parse(userdata);
+      itemsCopy = [...items];
+      console.log('khurram', items);
+      itemsCopy.push({
+        itemId,
+        itemTitle,
+        itemDescription,
+        itemPrice,
+        itemImg,
+        itemQuantity: 1,
+      });
+    } else {
+      itemsCopy = [
+        {
+          itemId,
+          itemTitle,
+          itemDescription,
+          itemPrice,
+          itemImg,
+          itemQuantity: 1,
+        },
+      ];
+    }
+    const key = 'itemImg';
+
+    const arrayUniqueByKey = [
+      ...new Map(itemsCopy.map(item => [item[key], item])).values(),
+    ];
+    console.log('items', arrayUniqueByKey);
+    await AsyncStorage.setItem('favourite', JSON.stringify(arrayUniqueByKey));
+    navigation.navigate('Favourite');
+  };
+  const data = ['All', "women's clothing", 'electronics', 'jewelery'];
+
+  const [value, setValue] = useState('All');
+  const onSelect = (value, label) => {
+    // this.setState({ value: value });
+  };
+  return (
+    <Layout navigation={navigation}>
+      <View style={{margin: 10}}>
+        <OptionMenu data={data} setValue={setValue} value={value} />
+      </View>
+      <View style={styles.container}>
+        <FlatList
+          style={styles.list}
+          contentContainerStyle={styles.listContainer}
+          data={Data.filter(item => {
+            if (value == 'All') {
+              return item.category != value;
+            } else {
+              return item.category == value;
+            }
+          })}
+          horizontal={false}
+          numColumns={2}
+          keyExtractor={item => {
+            return item.id;
+          }}
+          ItemSeparatorComponent={() => {
+            return <View style={styles.separator} />;
+          }}
+          renderItem={post => {
+            const item = post.item;
+            return (
+              <View style={styles.card}>
+                <View style={styles.cardHeader}>
+                  <View>
+                    <Text numberOfLines={1} style={styles.title}>
+                      {item.title}
+                    </Text>
+                    <Text style={styles.price}>{item.price}</Text>
                   </View>
-                  <TouchableOpacity
-                    onPress={() => this.props.navigation.navigate('Detail')}>
-                    <Image
-                      style={styles.cardImage}
-                      source={{uri: item.image}}
-                    />
-                  </TouchableOpacity>
-                  <View style={styles.cardFooter}>
-                    <View style={styles.socialBarContainer}>
-                      <View style={styles.socialBarSection}>
-                        <TouchableOpacity
-                          style={styles.socialBarButton}
-                          onPress={() => this.addProductToCart()}>
-                          <Image
-                            style={styles.icon}
-                            source={{
-                              uri: 'https://img.icons8.com/nolan/96/3498db/add-shopping-cart.png',
-                            }}
-                          />
-                          <Text style={[styles.socialBarLabel, styles.buyNow]}>
-                            Buy Now
-                          </Text>
-                        </TouchableOpacity>
-                      </View>
-                      <View style={styles.socialBarSection}>
-                        <TouchableOpacity style={styles.socialBarButton}>
-                          <Image
-                            style={styles.icon}
-                            source={{
-                              uri: 'https://img.icons8.com/color/50/000000/hearts.png',
-                            }}
-                          />
-                          <Text style={styles.socialBarLabel}>25</Text>
-                        </TouchableOpacity>
-                      </View>
+                </View>
+                <TouchableOpacity
+                  onPress={() =>
+                    navigation.navigate('Detail', {
+                      itemId: item.id,
+                      itemTitle: item.title,
+                      itemDescription: item.description,
+                      itemPrice: item.price,
+                      itemImg: item.image,
+                    })
+                  }>
+                  <Image style={styles.cardImage} source={{uri: item.image}} />
+                </TouchableOpacity>
+                <View style={styles.cardFooter}>
+                  <View style={styles.socialBarContainer}>
+                    <View style={styles.socialBarSection}>
+                      <TouchableOpacity
+                        style={styles.socialBarButton}
+                        onPress={() =>
+                          addProductToCart(
+                            item.id,
+                            item.title,
+                            item.description,
+                            item.price,
+                            item.image,
+                          )
+                        }>
+                        <Image
+                          style={styles.icon}
+                          source={{
+                            uri: 'https://img.icons8.com/nolan/96/3498db/add-shopping-cart.png',
+                          }}
+                        />
+                        <Text style={[styles.socialBarLabel, styles.buyNow]}>
+                          Buy Now
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+                    <View style={styles.socialBarSection}>
+                      <TouchableOpacity
+                        style={styles.socialBarButton}
+                        onPress={() =>
+                          addProductToFavourite(
+                            item.id,
+                            item.title,
+                            item.description,
+                            item.price,
+                            item.image,
+                          )
+                        }>
+                        <Image
+                          style={styles.icon}
+                          source={{
+                            uri: 'https://img.icons8.com/color/50/000000/hearts.png',
+                          }}
+                        />
+                        <Text style={styles.socialBarLabel}>25</Text>
+                      </TouchableOpacity>
                     </View>
                   </View>
                 </View>
-              );
-            }}
-          />
-        </View>
-      </Layout>
-    );
-  }
+              </View>
+            );
+          }}
+        />
+      </View>
+    </Layout>
+  );
 }
 
 const styles = StyleSheet.create({

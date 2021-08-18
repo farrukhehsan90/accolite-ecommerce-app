@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   StyleSheet,
   Button,
@@ -17,8 +17,10 @@ import {
   Ionicons,
   MaterialCommunityIcons,
 } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-community/async-storage';
+import Icon from 'react-native-vector-icons/Ionicons';
 
-export default function Favourite() {
+export default function Favourite(props) {
   const [state, setState] = useState({
     selectAll: false,
     cartItemsIsLoading: false,
@@ -81,6 +83,44 @@ export default function Favourite() {
     centerElement: {justifyContent: 'center', alignItems: 'center'},
   });
 
+  const deleteHandler = index => {
+    Alert.alert(
+      'Are you sure you want to delete this item from your cart?',
+      '',
+      [
+        {
+          text: 'Cancel',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        {
+          text: 'Delete',
+          onPress: async () => {
+            let updatedCart = state.cartItems;
+            updatedCart.splice(index, 1);
+            await AsyncStorage.setItem(
+              'favourite',
+              JSON.stringify(updatedCart),
+            );
+            setState({...state, cartItems: updatedCart});
+          },
+        },
+      ],
+      {cancelable: false},
+    );
+  };
+
+  const getItems = async () => {
+    const userdata = await AsyncStorage.getItem('favourite');
+    console.log('userdata', userdata);
+    let items = JSON.parse(userdata);
+    setState({...state, cartItems: items});
+  };
+
+  useEffect(() => {
+    getItems();
+  }, [props]);
+
   const {cartItems, cartItemsIsLoading, selectAll} = state;
 
   return (
@@ -129,7 +169,7 @@ export default function Favourite() {
                   }}>
                   <TouchableOpacity style={{paddingRight: 10}}>
                     <Image
-                      source={{uri: item.thumbnailImage}}
+                      source={{uri: item.itemImg}}
                       style={[
                         styles.centerElement,
                         {height: 60, width: 60, backgroundColor: '#eeeeee'},
@@ -139,7 +179,7 @@ export default function Favourite() {
                   <View
                     style={{flexGrow: 1, flexShrink: 1, alignSelf: 'center'}}>
                     <Text numberOfLines={1} style={{fontSize: 15}}>
-                      {item.name}
+                      {item.itemTitle}
                     </Text>
                     <Text numberOfLines={1} style={{color: '#8f8f8f'}}>
                       {item.color ? 'Variation: ' + item.color : ''}
@@ -147,7 +187,7 @@ export default function Favourite() {
                     <Text
                       numberOfLines={1}
                       style={{color: '#333333', marginBottom: 10}}>
-                      ${item.qty * item.salePrice}
+                      ${item.itemQuantity * item.itemPrice}
                     </Text>
                     <View style={{flexDirection: 'row'}}>
                       <TouchableOpacity
@@ -164,12 +204,19 @@ export default function Favourite() {
                     </View>
                   </View>
                 </View>
-                <View style={[styles.centerElement, {width: 60}]}>
+                {/* <View style={[styles.centerElement, {width: 60}]}>
                   <TouchableOpacity
                     style={[
                       styles.centerElement,
                       {width: 32, height: 32},
                     ]}></TouchableOpacity>
+                </View> */}
+                <View style={[styles.centerElement, {width: 60}]}>
+                  <TouchableOpacity
+                    style={[styles.centerElement, {width: 32, height: 32}]}
+                    onPress={() => deleteHandler(i)}>
+                    <Icon name="md-trash" size={25} color="#ee4d2d" />
+                  </TouchableOpacity>
                 </View>
               </View>
             ))}

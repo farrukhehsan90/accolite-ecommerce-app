@@ -10,11 +10,45 @@ import {
   FlatList,
   Button,
 } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 
-export default function ProductDetail(props) {
-  const clickEventListener = () => {
-    // Alert.alert('Success', 'Product has beed added to cart');
-    props.navigation.navigate('Cart');
+export default function ProductDetail({route, navigation}) {
+  const {itemId, itemTitle, itemDescription, itemPrice, itemImg} = route.params;
+  const clickEventListener = async () => {
+    const userdata = await AsyncStorage.getItem('items');
+    let itemsCopy;
+    if (userdata) {
+      let items = JSON.parse(userdata);
+      itemsCopy = [...items];
+      console.log('khurram', items);
+      itemsCopy.push({
+        itemId,
+        itemTitle,
+        itemDescription,
+        itemPrice,
+        itemImg,
+        itemQuantity: 1,
+      });
+    } else {
+      itemsCopy = [
+        {
+          itemId,
+          itemTitle,
+          itemDescription,
+          itemPrice,
+          itemImg,
+          itemQuantity: 1,
+        },
+      ];
+    }
+    const key = 'itemImg';
+
+    const arrayUniqueByKey = [
+      ...new Map(itemsCopy.map(item => [item[key], item])).values(),
+    ];
+    console.log('items', arrayUniqueByKey);
+    await AsyncStorage.setItem('items', JSON.stringify(arrayUniqueByKey));
+    navigation.navigate('Cart');
   };
 
   return (
@@ -24,17 +58,12 @@ export default function ProductDetail(props) {
           <Image
             style={styles.productImg}
             source={{
-              uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT3v7KDJN7TAoJa5sFaPWcp1HX8JFcpF3z5K3ngz4L6kWoEP7Ca',
+              uri: itemImg,
             }}
           />
-          <Text style={styles.name}>Super Soft T-Shirt</Text>
-          <Text style={styles.price}>$ 12.22</Text>
-          <Text style={styles.description}>
-            Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean
-            commodo ligula eget dolor. Aenean massa. Cum sociis natoque
-            penatibus et magnis dis parturient montes, nascetur ridiculus mus.
-            Donec quam felis, ultricies nec
-          </Text>
+          <Text style={styles.name}>{itemTitle}</Text>
+          <Text style={styles.price}>$ {itemPrice}</Text>
+          <Text style={styles.description}>{itemDescription}</Text>
         </View>
         <View style={styles.starContainer}>
           <Image
