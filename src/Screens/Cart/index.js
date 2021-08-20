@@ -231,7 +231,10 @@ export default function Cart(props) {
                     <Text
                       numberOfLines={1}
                       style={{color: '#333333', marginBottom: 10}}>
-                      ${item.itemQuantity * item.itemPrice}
+                      $
+                      {parseFloat(item.itemQuantity * item.itemPrice).toFixed(
+                        2,
+                      )}
                     </Text>
                     <View style={{flexDirection: 'row'}}>
                       <TouchableOpacity

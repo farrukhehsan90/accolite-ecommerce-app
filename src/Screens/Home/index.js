@@ -6,13 +6,13 @@ import {
   TouchableOpacity,
   Image,
   Alert,
+  TextInput,
   ScrollView,
   FlatList,
 } from 'react-native';
 import Layout from '../../Layout';
 import Data from './data.json';
 import AsyncStorage from '@react-native-community/async-storage';
-import {Select, Option} from 'react-native-single-select';
 import OptionMenu from './OptionMenu';
 
 export default function Store({navigation}) {
@@ -94,7 +94,6 @@ export default function Store({navigation}) {
     if (userdata) {
       let items = JSON.parse(userdata);
       itemsCopy = [...items];
-      console.log('khurram', items);
       itemsCopy.push({
         itemId,
         itemTitle,
@@ -170,19 +169,43 @@ export default function Store({navigation}) {
   const data = ['All', "women's clothing", 'electronics', 'jewelery'];
 
   const [value, setValue] = useState('All');
-  const onSelect = (value, label) => {
-    // this.setState({ value: value });
+
+  const onSearch = value => {
+    let matchingStrings = [];
+    Data.forEach(list => {
+      if (
+        list.title.toLocaleLowerCase().search(value.toLocaleLowerCase()) > -1
+      ) {
+        matchingStrings.push(list);
+      }
+    });
+    setProduct(matchingStrings);
   };
+
+  const [product, setProduct] = useState(Data);
+
   return (
     <Layout navigation={navigation}>
       <View style={{margin: 10}}>
         <OptionMenu data={data} setValue={setValue} value={value} />
       </View>
+      <View>
+        <TextInput
+          placeholder="Search products"
+          style={{
+            backgroundColor: 'white',
+            borderRadius: 15,
+            margin: 10,
+            paddingLeft: 20,
+          }}
+          onChangeText={text => onSearch(text)}
+        />
+      </View>
       <View style={styles.container}>
         <FlatList
           style={styles.list}
           contentContainerStyle={styles.listContainer}
-          data={Data.filter(item => {
+          data={product.filter(item => {
             if (value == 'All') {
               return item.category != value;
             } else {
